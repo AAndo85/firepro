@@ -4,40 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>FirePro</title>
+    <title>FirePro Downloader</title>
     <style>
-        body { background-color: #000; color: white; overflow-x: hidden; }
-        /* Professional Card Style */
-        .app-card { 
-            background: #0a0a0a; 
-            border: 1px solid #1a1a1a; 
-            width: 320px; 
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
+        body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .app-card { background: #0a0a0a; border: 1px solid #1a1a1a; width: 300px; flex-shrink: 0; transition: all 0.2s; }
         .app-card:hover { border-color: #ea580c; background: #111; transform: translateY(-5px); }
-        /* Hide scrollbar but keep functionality */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        #download-overlay { background: rgba(0,0,0,0.9); display: none; }
     </style>
 </head>
 <body class="p-6">
+
+    <div id="download-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
+        <div class="w-64 bg-zinc-900 rounded-full h-4 mb-4 overflow-hidden">
+            <div id="progress-bar" class="bg-orange-600 h-full w-0 transition-all"></div>
+        </div>
+        <p id="status-text" class="text-orange-600 font-black italic tracking-widest">DOWNLOADING...</p>
+    </div>
+
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-6xl font-black text-orange-600 mb-2 italic tracking-tighter">FIREPRO</h1>
-        <p class="text-zinc-500 text-xs tracking-[0.3em] mb-8">AUTHENTICATED ACCESS</p>
-        <input type="text" id="code" placeholder="ENTER CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-72 outline-none focus:border-orange-600 mb-4 font-bold text-xl">
-        <button onclick="checkCode()" class="bg-orange-600 w-72 py-4 rounded-2xl font-black hover:bg-orange-500 active:scale-95 transition">LOGIN</button>
+        <h1 class="text-6xl font-black text-orange-600 mb-2 italic">FIREPRO</h1>
+        <p class="text-zinc-500 text-xs tracking-[0.3em] mb-8">DOWNLOAD MANAGER</p>
+        <input type="text" id="code" placeholder="ENTER CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-72 outline-none focus:border-orange-600 mb-4 font-bold text-xl uppercase">
+        <button onclick="checkCode()" class="bg-orange-600 w-72 py-4 rounded-2xl font-black hover:bg-orange-500 transition">ACCESS LIBRARY</button>
     </div>
 
     <div id="library" class="hidden">
-        <div class="flex justify-between items-center mb-12 border-b border-zinc-900 pb-6">
-            <h1 class="text-4xl font-black italic text-orange-600">FIREPRO <span class="text-white not-italic text-xl ml-2 opacity-50">LIBRARY</span></h1>
-            <button onclick="location.reload()" class="text-zinc-500 text-sm hover:text-white">Exit</button>
+        <div class="flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
+            <h1 class="text-3xl font-black italic text-orange-600">FIREPRO <span class="text-white not-italic text-lg ml-2">APPS</span></h1>
+            <button onclick="location.reload()" class="bg-zinc-800 px-4 py-2 rounded-lg text-xs font-bold uppercase">Logout</button>
         </div>
-        
         <div id="flex-container" class="flex flex-wrap justify-center gap-6 pb-20"></div>
     </div>
 
     <script>
+        // DOWNLOADER FUNCTION
+        async function startDownload(url, filename) {
+            const overlay = document.getElementById('download-overlay');
+            const bar = document.getElementById('progress-bar');
+            const status = document.getElementById('status-text');
+            
+            overlay.style.display = 'flex';
+            bar.style.width = '0%';
+
+            try {
+                const response = await fetch(url);
+                const reader = response.body.getReader();
+                const contentLength = +response.headers.get('Content-Length');
+                
+                let receivedLength = 0;
+                let chunks = []; 
+
+                while(true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    receivedLength += value.length;
+                    
+                    // Update progress bar
+                    let percent = Math.round((receivedLength / contentLength) * 100);
+                    bar.style.width = percent + '%';
+                    status.innerText = `DOWNLOADING: ${percent}%`;
+                }
+
+                // Create a blob and trigger install
+                const blob = new Blob(chunks);
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                
+                status.innerText = "DOWNLOAD COMPLETE";
+                setTimeout(() => { overlay.style.display = 'none'; }, 2000);
+
+            } catch (err) {
+                alert("Download Failed. Ensure 'Unknown Sources' is enabled in settings.");
+                overlay.style.display = 'none';
+            }
+        }
+
+        // ACCESS & DISPLAY LOGIC
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json')
@@ -47,21 +92,20 @@
                         document.getElementById('login-box').classList.add('hidden');
                         document.getElementById('library').classList.remove('hidden');
                         
-                        // ALPHABETICAL SORTING LOGIC
                         const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
-
                         const container = document.getElementById('flex-container');
+                        
                         sortedApps.forEach(app => {
                             container.innerHTML += `
                                 <div class="app-card p-6 rounded-3xl flex flex-col items-center text-center">
-                                    <img src="${app.icon}" class="w-20 h-20 rounded-2xl mb-4 shadow-2xl border-2 border-zinc-800">
-                                    <h3 class="font-black text-lg mb-1 uppercase tracking-tight">${app.name}</h3>
-                                    <p class="text-[10px] text-zinc-500 mb-6 h-8 overflow-hidden">${app.desc}</p>
-                                    <a href="${app.url}" class="w-full bg-orange-600 py-3 rounded-xl font-black text-xs hover:bg-orange-500 transition">DOWNLOAD APK</a>
+                                    <img src="${app.icon}" class="w-20 h-20 rounded-2xl mb-4 shadow-xl object-cover">
+                                    <h3 class="font-black text-lg mb-1 uppercase tracking-tighter">${app.name}</h3>
+                                    <p class="text-[10px] text-zinc-500 mb-6 h-8 overflow-hidden uppercase">${app.desc}</p>
+                                    <button onclick="startDownload('${app.url}', '${app.name}.apk')" class="w-full bg-orange-600 py-3 rounded-xl font-black text-xs hover:bg-orange-500 transition">INSTALL NOW</button>
                                 </div>`;
                         });
-                    } else { alert("Invalid Code"); }
-                }).catch(() => alert("Network Error: Update firepro.json"));
+                    } else { alert("Access Denied"); }
+                });
         }
     </script>
 </body>

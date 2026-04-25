@@ -13,6 +13,12 @@
             transform: scale(1.05);
             z-index: 50;
         }
+        /* Style for when the app is "Marked" as installed */
+        .installed {
+            background-color: #27272a !important; /* Zinc-800 */
+            color: #71717a !important; /* Zinc-400 */
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="p-6">
@@ -35,6 +41,11 @@
     </div>
 
     <script>
+        function markInstalled(btn) {
+            btn.innerText = "INSTALLED";
+            btn.classList.add('installed');
+        }
+
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json?v=' + Date.now()).then(res => res.json()).then(data => {
@@ -45,7 +56,6 @@
                     container.innerHTML = ''; 
                     
                     data[input].forEach(app => {
-                        // Using the direct download link structure from your JSON
                         const directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'dl=1');
                         
                         const card = document.createElement('div');
@@ -55,7 +65,11 @@
                             <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl object-cover">
                             <h3 class="font-bold uppercase text-xl mb-1">${app.name}</h3>
                             <p class="text-[10px] text-zinc-500 mb-6 uppercase tracking-widest">${app.desc || ''}</p>
-                            <a href="${directUrl}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase">Install Now</a>
+                            <a href="${directUrl}" 
+                               onclick="markInstalled(this)"
+                               class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase block">
+                               Download
+                            </a>
                         `;
                         container.appendChild(card);
                     });
@@ -70,7 +84,6 @@
             });
         }
 
-        // REMOTE NAVIGATION
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 13) {
                 if (document.activeElement) document.activeElement.click();

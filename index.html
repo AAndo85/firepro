@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #000; color: white; overflow: hidden; font-family: sans-serif; }
+        body { background-color: #000; color: white; font-family: sans-serif; }
         .selectable:focus { 
             background-color: white !important; 
             color: #ea580c !important; 
@@ -37,7 +37,6 @@
     <script>
         function checkCode() {
             const input = document.getElementById('code').value;
-            // Fetching your JSON and clearing the container to ensure no duplicates
             fetch('./firepro.json?v=' + Date.now()).then(res => res.json()).then(data => {
                 if (data[input]) {
                     document.getElementById('login-box').style.display = 'none';
@@ -46,15 +45,14 @@
                     container.innerHTML = ''; 
                     
                     data[input].forEach(app => {
-                        // REVERSION: Pulling the unique URL per app from your JSON
-                        // Using the direct download fix to avoid Play Store redirection
+                        // Using the direct download link structure from your JSON
                         const directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'dl=1');
                         
                         const card = document.createElement('div');
                         card.className = "bg-zinc-900 p-8 rounded-[2.5rem] flex flex-col items-center w-72 shadow-2xl";
                         
                         card.innerHTML = `
-                            <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl object-cover border border-zinc-800">
+                            <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl object-cover">
                             <h3 class="font-bold uppercase text-xl mb-1">${app.name}</h3>
                             <p class="text-[10px] text-zinc-500 mb-6 uppercase tracking-widest">${app.desc || ''}</p>
                             <a href="${directUrl}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase">Install Now</a>
@@ -62,7 +60,6 @@
                         container.appendChild(card);
                     });
                     
-                    // Initial focus for remote navigation
                     setTimeout(() => {
                         const first = document.querySelector('.selectable');
                         if (first) first.focus();
@@ -73,12 +70,12 @@
             });
         }
 
-        // TV REMOTE NAVIGATION
+        // REMOTE NAVIGATION
         document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) { // Select
+            if (e.keyCode === 13) {
                 if (document.activeElement) document.activeElement.click();
             }
-            if (e.keyCode === 8 || e.keyCode === 461) { // Back
+            if (e.keyCode === 8 || e.keyCode === 461) {
                 if (!document.getElementById('library').classList.contains('hidden')) {
                     location.reload();
                 }

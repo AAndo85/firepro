@@ -9,12 +9,13 @@
         body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
         .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
         
-        /* Forces the TV Remote to highlight the button in bright white */
+        /* High-visibility focus for Firestick Remotes */
         button:focus, a:focus { 
             background-color: #ffffff !important; 
             color: #ea580c !important;
             outline: 8px solid #ea580c; 
-            transform: scale(1.05);
+            transform: scale(1.1);
+            z-index: 50;
         }
         .app-card:focus-within { border-color: #ea580c; }
     </style>
@@ -22,14 +23,14 @@
 <body class="p-6">
 
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-6xl font-black text-orange-600 italic mb-10">FIREPRO</h1>
+        <h1 class="text-6xl font-black text-orange-600 italic mb-10 text-center">FIREPRO</h1>
         <input type="text" id="code" placeholder="ENTER ACCESS CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-80 outline-none focus:border-orange-600 mb-4 font-bold text-xl uppercase text-white">
-        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black shadow-lg">ACCESS LIBRARY</button>
+        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black shadow-lg uppercase tracking-widest">Access Library</button>
     </div>
 
     <div id="library" class="hidden">
         <div class="flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
-            <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50">Library</span></h1>
+            <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50 text-center">Library</span></h1>
             <div class="flex gap-4">
                 <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase">Logout</button>
                 <button onclick="window.history.back()" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase">Exit App</button>
@@ -39,6 +40,23 @@
     </div>
 
     <script>
+        // TV Remote Key Handler (Detects "Select/Center" and "Back" buttons)
+        window.addEventListener('keydown', function(event) {
+            // Handle Back Button
+            if (event.key === 'Backspace' || event.keyCode === 8 || event.keyCode === 461) {
+                if (!document.getElementById('library').classList.contains('hidden')) {
+                    location.reload();
+                }
+            }
+            // Handle Center/Select Button (KeyCode 13)
+            if (event.keyCode === 13) {
+                const focusedElement = document.activeElement;
+                if (focusedElement && focusedElement.tagName === 'BUTTON') {
+                    focusedElement.click();
+                }
+            }
+        });
+
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json')
@@ -54,22 +72,25 @@
                         const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
                         
                         sortedApps.forEach(app => {
-                            // This specific structure is required for Firestick 'Downloader' app compatibility
                             const card = document.createElement('div');
                             card.className = "app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl";
                             card.innerHTML = `
                                 <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 shadow-xl object-cover border-2 border-zinc-800">
                                 <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
                                 <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
-                                <a href="${app.url}" download class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center block">
+                                <button onclick="window.location.assign('${app.url}')" 
+                                        class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center block">
                                    Install Now
-                                </a>
+                                </button>
                             `;
                             container.appendChild(card);
                         });
                     } else { 
                         alert("Access Code Invalid"); 
                     }
+                })
+                .catch(err => {
+                    alert("Error: Ensure firepro.json is correct and accessible.");
                 });
         }
     </script>

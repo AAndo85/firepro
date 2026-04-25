@@ -9,7 +9,6 @@
         body { background-color: #000; color: white; font-family: sans-serif; }
         .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
         .app-card:hover { border-color: #ea580c; transform: scale(1.02); }
-        .btn-install { background: linear-gradient(to right, #ea580c, #f97316); }
     </style>
 </head>
 <body class="p-6">
@@ -25,18 +24,10 @@
             <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50">Library</span></h1>
             <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase hover:bg-zinc-700">Logout</button>
         </div>
-        
         <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
-        // THE FIX: Direct Download Redirect
-        function forceDownload(url) {
-            // This opens the Dropbox link in a new window/tab which 
-            // forces the Android System to recognize it as a file download.
-            window.location.assign(url);
-        }
-
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json')
@@ -56,125 +47,12 @@
                                     <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
                                     <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
                                     
-                                    <button onclick="forceDownload('${app.url}')" class="btn-install w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:brightness-110 active:scale-95 transition shadow-lg">
+                                    <a href="${app.url}" download="${app.name}.apk" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-500 transition text-center shadow-lg active:scale-95">
                                         Install Now
-                                    </button>
-                                </div>`;
-                        });
-                    } else { alert("Access Code Invalid"); }
-                });
-        }
-    </script>
-</body>
-</html>
-        function checkCode() {
-            const input = document.getElementById('code').value;
-            // Always use lowercase file name for reliability
-            fetch('./firepro.json')
-                .then(res => res.json())
-                .then(data => {
-                    if (data[input]) {
-                        document.getElementById('login-box').classList.add('hidden');
-                        document.getElementById('library').classList.remove('hidden');
-                        
-                        // Alphabetical Sort
-                        const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
-                        const container = document.getElementById('flex-container');
-                        
-                        sortedApps.forEach(app => {
-                            container.innerHTML += `
-                                <div class="app-card p-6 rounded-3xl flex flex-col items-center text-center shadow-2xl">
-                                    <img src="${app.icon}" class="w-24 h-24 rounded-2xl mb-4 shadow-lg object-cover border border-zinc-800">
-                                    <h3 class="font-black text-xl mb-1 uppercase tracking-tighter">${app.name}</h3>
-                                    <p class="text-[10px] text-zinc-500 mb-6 h-8 overflow-hidden uppercase leading-tight px-2">${app.desc}</p>
-                                    <a href="${app.url}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-xs hover:bg-orange-500 transition flex items-center justify-center uppercase tracking-widest shadow-lg active:scale-95">
-                                        Download & Install
                                     </a>
                                 </div>`;
                         });
-                    } else { 
-                        alert("Invalid Access Code"); 
-                    }
-                })
-                .catch(err => {
-                    alert("Error: Check your firepro.json formatting.");
-                    console.error(err);
-                });
-        }
-    </script>
-</body>
-</html>
-    </div>
-
-    <script>
-        // DOWNLOADER FUNCTION
-        async function startDownload(url, filename) {
-            const overlay = document.getElementById('download-overlay');
-            const bar = document.getElementById('progress-bar');
-            const status = document.getElementById('status-text');
-            
-            overlay.style.display = 'flex';
-            bar.style.width = '0%';
-
-            try {
-                const response = await fetch(url);
-                const reader = response.body.getReader();
-                const contentLength = +response.headers.get('Content-Length');
-                
-                let receivedLength = 0;
-                let chunks = []; 
-
-                while(true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    chunks.push(value);
-                    receivedLength += value.length;
-                    
-                    // Update progress bar
-                    let percent = Math.round((receivedLength / contentLength) * 100);
-                    bar.style.width = percent + '%';
-                    status.innerText = `DOWNLOADING: ${percent}%`;
-                }
-
-                // Create a blob and trigger install
-                const blob = new Blob(chunks);
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
-                
-                status.innerText = "DOWNLOAD COMPLETE";
-                setTimeout(() => { overlay.style.display = 'none'; }, 2000);
-
-            } catch (err) {
-                alert("Download Failed. Ensure 'Unknown Sources' is enabled in settings.");
-                overlay.style.display = 'none';
-            }
-        }
-
-        // ACCESS & DISPLAY LOGIC
-        function checkCode() {
-            const input = document.getElementById('code').value;
-            fetch('./firepro.json')
-                .then(res => res.json())
-                .then(data => {
-                    if (data[input]) {
-                        document.getElementById('login-box').classList.add('hidden');
-                        document.getElementById('library').classList.remove('hidden');
-                        
-                        const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
-                        const container = document.getElementById('flex-container');
-                        
-                        sortedApps.forEach(app => {
-                            container.innerHTML += `
-                                <div class="app-card p-6 rounded-3xl flex flex-col items-center text-center">
-                                    <img src="${app.icon}" class="w-20 h-20 rounded-2xl mb-4 shadow-xl object-cover">
-                                    <h3 class="font-black text-lg mb-1 uppercase tracking-tighter">${app.name}</h3>
-                                    <p class="text-[10px] text-zinc-500 mb-6 h-8 overflow-hidden uppercase">${app.desc}</p>
-                                    <button onclick="startDownload('${app.url}', '${app.name}.apk')" class="w-full bg-orange-600 py-3 rounded-xl font-black text-xs hover:bg-orange-500 transition">INSTALL NOW</button>
-                                </div>`;
-                        });
-                    } else { alert("Access Denied"); }
+                    } else { alert("Access Code Invalid"); }
                 });
         }
     </script>

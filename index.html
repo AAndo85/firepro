@@ -9,7 +9,7 @@
         body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
         .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
         
-        /* High-visibility focus for TV Remotes */
+        /* High-visibility white focus for TV Remotes */
         button:focus, a:focus { 
             background-color: #ffffff !important; 
             color: #ea580c !important;
@@ -32,13 +32,14 @@
             <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50">Library</span></h1>
             <div class="flex gap-4">
                 <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase hover:bg-zinc-700">Logout</button>
+                <button onclick="window.close();" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase hover:bg-red-600">Exit App</button>
             </div>
         </div>
         <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
-        // Listen for the "Back" button on TV remotes to exit or refresh
+        // TV Remote "Back" Button Handler
         window.addEventListener('keydown', function(event) {
             if (event.key === 'Backspace' || event.keyCode === 8 || event.keyCode === 461) {
                 if (!document.getElementById('library').classList.contains('hidden')) {

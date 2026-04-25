@@ -6,18 +6,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>FirePro Library</title>
     <style>
-        body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
-        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
+        body { background-color: #000; color: white; font-family: sans-serif; overflow: hidden; }
+        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; outline: none; }
         
-        /* Extreme focus visibility for TV remotes */
-        button:focus, a:focus { 
+        /* THE FOCUS FIX: Visual highlight so the TV remote knows where it is */
+        button:focus, a:focus, .selectable:focus { 
             background-color: #ffffff !important; 
             color: #ea580c !important;
             outline: 10px solid #ea580c; 
-            transform: scale(1.1);
-            z-index: 999;
+            transform: scale(1.05);
         }
-        .app-card:focus-within { border-color: #ea580c; }
     </style>
 </head>
 <body class="p-6">
@@ -25,31 +23,35 @@
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
         <h1 class="text-6xl font-black text-orange-600 italic mb-10 text-center">FIREPRO</h1>
         <input type="text" id="code" placeholder="ENTER ACCESS CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-80 outline-none focus:border-orange-600 mb-4 font-bold text-xl uppercase text-white">
-        <button id="access-btn" onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black shadow-lg">ACCESS LIBRARY</button>
+        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black shadow-lg selectable">ACCESS LIBRARY</button>
     </div>
 
     <div id="library" class="hidden">
         <div class="flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
-            <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50">Library</span></h1>
+            <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro</h1>
             <div class="flex gap-4">
-                <a href="javascript:location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase no-underline">Logout</a>
-                <a href="https://google.com" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase no-underline">Exit</a>
+                <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase selectable">Logout</button>
+                <button onclick="window.close();" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase selectable">Exit</button>
             </div>
         </div>
         <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
-        // Force the center "Select" button to trigger the click on the TV
+        // GLOBAL REMOTE HANDLER
         window.addEventListener('keydown', function(e) {
+            // Select Button (Center Circle)
             if (e.keyCode === 13) {
                 if (document.activeElement) document.activeElement.click();
             }
-            // Fix the Back button behavior
-            if (e.keyCode === 8 || e.keyCode === 461) {
+            // Back Button Fix (Forces app to show login or exit)
+            if (e.keyCode === 4 || e.keyCode === 8 || e.keyCode === 461) {
                 if (!document.getElementById('library').classList.contains('hidden')) {
-                    location.reload();
+                    location.reload(); 
                     e.preventDefault();
+                } else {
+                    // Try to close the app if on login screen
+                    window.close();
                 }
             }
         });
@@ -60,35 +62,30 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data[input]) {
-                        document.getElementById('login-box').style.display = 'none';
+                        document.getElementById('login-box').classList.add('hidden');
                         document.getElementById('library').classList.remove('hidden');
-                        
                         const container = document.getElementById('flex-container');
                         container.innerHTML = ''; 
                         
                         const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
                         
                         sortedApps.forEach(app => {
-                            // Using standard <a> tags for the Install button to force Downloader to trigger
-                            container.innerHTML += `
-                                <div class="app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl">
-                                    <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 shadow-xl object-cover border-2 border-zinc-800">
-                                    <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
-                                    <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
-                                    <a href="${app.url}" class="install-link w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center block no-underline">
-                                       Install Now
-                                    </a>
-                                </div>`;
+                            const card = document.createElement('div');
+                            card.className = "app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl";
+                            // FIXED INSTALL: Force standard download behavior
+                            card.innerHTML = `
+                                <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 object-cover">
+                                <h3 class="font-black text-2xl mb-1 uppercase">${app.name}</h3>
+                                <p class="text-xs text-zinc-500 mb-8 uppercase">${app.desc}</p>
+                                <a href="${app.url}" download target="_blank" class="install-btn w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase text-center block no-underline selectable">
+                                   Install Now
+                                </a>`;
+                            container.appendChild(card);
                         });
 
-                        // Immediate focus fix for TV remote
-                        setTimeout(() => {
-                            const firstLink = document.querySelector('.install-link');
-                            if (firstLink) firstLink.focus();
-                        }, 200);
-                    } else { 
-                        alert("Access Code Invalid"); 
-                    }
+                        // Set focus so remote starts working immediately
+                        setTimeout(() => document.querySelector('.selectable').focus(), 300);
+                    } else { alert("Invalid Code"); }
                 });
         }
     </script>

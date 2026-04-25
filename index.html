@@ -7,14 +7,14 @@
     <title>FirePro Library</title>
     <style>
         body { background-color: #000; color: white; font-family: sans-serif; overflow: hidden; }
-        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; outline: none; }
+        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.2s; outline: none; }
         
-        /* THE VISUAL FIX: High-contrast focus so you can see where you are with the remote */
+        /* THE VISUAL HIGHLIGHT: Essential for TV Remotes */
         .selectable:focus { 
             background-color: #ffffff !important; 
             color: #ea580c !important;
             outline: 10px solid #ea580c; 
-            transform: scale(1.05);
+            transform: scale(1.08);
             z-index: 100;
         }
     </style>
@@ -32,26 +32,37 @@
             <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro</h1>
             <div class="flex gap-4">
                 <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase selectable">Logout</button>
-                <button onclick="Android.exitApp(); window.close();" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase selectable">Exit</button>
+                <button onclick="exitFirePro()" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase selectable">Exit</button>
             </div>
         </div>
         <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
-        // FORCED REMOTE HANDLER
+        // FUNCTION TO CLOSE THE APP
+        function exitFirePro() {
+            if (window.Android && window.Android.exitApp) {
+                window.Android.exitApp(); // WebIntoApp Native Command
+            } else {
+                window.close(); // Standard Web Command
+                window.location.href = "about:blank"; // Fallback for TV
+            }
+        }
+
+        // GLOBAL REMOTE KEY HANDLER
         window.addEventListener('keydown', function(e) {
             // Select Button (Center Circle)
-            if (e.keyCode === 13) {
+            if (e.keyCode === 13 || e.keyCode === 23) {
                 if (document.activeElement) document.activeElement.click();
             }
-            // Back Button (Forces exit or return to login)
+            // Back Button Fix
             if (e.keyCode === 4 || e.keyCode === 8 || e.keyCode === 461) {
                 if (!document.getElementById('library').classList.contains('hidden')) {
                     location.reload(); 
                 } else {
-                    Android.exitApp(); window.close();
+                    exitFirePro();
                 }
+                e.preventDefault();
             }
         });
 
@@ -71,18 +82,18 @@
                         sortedApps.forEach(app => {
                             const card = document.createElement('div');
                             card.className = "app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl";
-                            // THE INSTALL FIX: Uses target="_system" to kick the download to the Firestick's downloader
+                            // THE INSTALL FIX: Changed from Button to <a> with forced external target
                             card.innerHTML = `
                                 <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 object-cover border-2 border-zinc-800">
                                 <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
                                 <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
-                                <a href="${app.url}" target="_system" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase text-center block no-underline selectable">
+                                <a href="${app.url}" target="_blank" download class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase text-center block no-underline selectable">
                                    Install Now
                                 </a>`;
                             container.appendChild(card);
                         });
 
-                        // Focus the first button immediately
+                        // Focus the first item immediately so the remote works
                         setTimeout(() => {
                             const first = document.querySelector('.selectable');
                             if (first) first.focus();

@@ -11,6 +11,7 @@
             color: #ea580c !important; 
             outline: 10px solid #ea580c;
             transform: scale(1.05);
+            z-index: 50;
         }
     </style>
 </head>
@@ -18,7 +19,7 @@
 
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
         <h1 class="text-6xl font-black text-orange-600 mb-10 italic uppercase">FirePro</h1>
-        <input type="text" id="code" class="bg-zinc-900 p-4 rounded-2xl w-80 text-white selectable text-center uppercase outline-none" placeholder="ENTER CODE">
+        <input type="text" id="code" class="bg-zinc-900 p-4 rounded-2xl w-80 text-white selectable text-center uppercase outline-none" placeholder="ENTER ACCESS CODE">
         <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 mt-4 rounded-2xl font-black selectable uppercase">Access Library</button>
     </div>
 
@@ -30,49 +31,58 @@
                 <button onclick="location.reload()" class="bg-red-700 px-6 py-2 rounded-xl selectable font-bold uppercase">Exit</button>
             </div>
         </div>
-        <div id="flex-container" class="flex flex-wrap justify-center gap-8"></div>
+        <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
         function checkCode() {
             const input = document.getElementById('code').value;
-            fetch('./firepro.json').then(res => res.json()).then(data => {
+            // Fetching your JSON and clearing the container to ensure no duplicates
+            fetch('./firepro.json?v=' + Date.now()).then(res => res.json()).then(data => {
                 if (data[input]) {
                     document.getElementById('login-box').style.display = 'none';
                     document.getElementById('library').classList.remove('hidden');
                     const container = document.getElementById('flex-container');
+                    container.innerHTML = ''; 
                     
                     data[input].forEach(app => {
-                        // FIX: Convert the URL from your JSON into a direct download link
-                        // This replaces 'www.dropbox.com' with 'dl.dropboxusercontent.com'
-                        let directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+                        // REVERSION: Pulling the unique URL per app from your JSON
+                        // Using the direct download fix to avoid Play Store redirection
+                        const directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'dl=1');
                         
                         const card = document.createElement('div');
-                        card.className = "bg-zinc-900 p-8 rounded-[2.5rem] flex flex-col items-center w-72";
+                        card.className = "bg-zinc-900 p-8 rounded-[2.5rem] flex flex-col items-center w-72 shadow-2xl";
                         
-                        // THE FIX: Each button now uses its own 'directUrl' from the JSON data
                         card.innerHTML = `
-                            <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl">
-                            <h3 class="font-bold uppercase text-xl mb-6">${app.name}</h3>
+                            <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl object-cover border border-zinc-800">
+                            <h3 class="font-bold uppercase text-xl mb-1">${app.name}</h3>
+                            <p class="text-[10px] text-zinc-500 mb-6 uppercase tracking-widest">${app.desc || ''}</p>
                             <a href="${directUrl}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase">Install Now</a>
                         `;
                         container.appendChild(card);
                     });
                     
+                    // Initial focus for remote navigation
                     setTimeout(() => {
                         const first = document.querySelector('.selectable');
                         if (first) first.focus();
                     }, 500);
+                } else {
+                    alert("Invalid Code");
                 }
             });
         }
 
+        // TV REMOTE NAVIGATION
         document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) document.activeElement.click(); 
-            if (e.keyCode === 8 || e.keyCode === 461) {
+            if (e.keyCode === 13) { // Select
+                if (document.activeElement) document.activeElement.click();
+            }
+            if (e.keyCode === 8 || e.keyCode === 461) { // Back
                 if (!document.getElementById('library').classList.contains('hidden')) {
                     location.reload();
                 }
+                e.preventDefault();
             }
         });
     </script>

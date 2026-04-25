@@ -3,64 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download FirePro</title>
+    <title>FirePro Download</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* CHANGED: overflow-y: auto allows scrolling on long pages */
+        /* Natural scrolling, no forced height locks */
         body { 
             background-color: #000; 
             color: white; 
-            overflow-y: auto; 
             font-family: sans-serif; 
-            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
-        .glow { box-shadow: 0 0 20px rgba(234, 88, 12, 0.3); }
-        .btn-animate:active { transform: scale(0.98); }
     </style>
 </head>
-<body class="flex flex-col items-center py-12 px-6 text-center">
+<body class="p-6">
 
-    <div class="mb-10">
-        <h1 class="text-7xl font-black text-orange-600 italic tracking-tighter uppercase">FIREPRO</h1>
-        <p class="text-zinc-500 mt-2 tracking-[0.3em] font-bold uppercase text-sm">Official Distribution</p>
-    </div>
-
-    <div class="bg-zinc-900 p-8 rounded-[3rem] border border-zinc-800 w-full max-w-md glow">
-        <div class="mb-8">
-            <div class="w-20 h-20 bg-orange-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-            </div>
-            <h2 class="text-2xl font-bold uppercase">FirePro App</h2>
-            <p class="text-zinc-400 mt-1">Version 1.0.0 (APK)</p>
+    <div class="max-w-md mx-auto pt-10 pb-20">
+        
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-black text-orange-600 italic uppercase">FirePro</h1>
+            <p class="text-zinc-500 tracking-widest text-xs mt-2 uppercase font-bold">App Distribution Center</p>
         </div>
 
-        <a href="https://dl.dropboxusercontent.com/scl/fi/nywwy46mbev7mlpqv8ni6/FirePro.apk?rlkey=64sncdn4d1n58bk0aqrthc0va" 
-           class="block w-full bg-orange-600 hover:bg-orange-500 text-white py-5 rounded-2xl font-black text-xl btn-animate transition-all uppercase">
-           Download Now
-        </a>
+        <div class="bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-orange-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold uppercase">FirePro APK</h2>
+                <p class="text-zinc-400 text-sm">Download for Android & Fire TV</p>
+            </div>
 
-        <div class="mt-8 pt-6 border-t border-zinc-800 text-left space-y-4">
-            <h3 class="text-orange-600 font-bold uppercase text-xs tracking-widest text-center">Instructions</h3>
-            <div class="flex gap-4 items-start">
-                <span class="bg-zinc-800 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center shrink-0">1</span>
-                <p class="text-zinc-400 text-sm">Tap the **Download** button above and wait for the file to save.</p>
-            </div>
-            <div class="flex gap-4 items-start">
-                <span class="bg-zinc-800 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center shrink-0">2</span>
-                <p class="text-zinc-400 text-sm">Open your File Manager or Downloads folder and tap **FirePro.apk**.</p>
-            </div>
-            <div class="flex gap-4 items-start">
-                <span class="bg-zinc-800 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center shrink-0">3</span>
-                <p class="text-zinc-400 text-sm">Select **Install**. If prompted, allow "Install from Unknown Sources".</p>
+            <a href="https://dl.dropboxusercontent.com/scl/fi/nywwy46mbev7mlpqv8ni6/FirePro.apk?rlkey=64sncdn4d1n58bk0aqrthc0va" 
+               class="block w-full bg-orange-600 py-5 rounded-2xl font-black text-xl text-center no-underline text-white uppercase active:bg-orange-700">
+               Install Now
+            </a>
+
+            <div class="mt-10 space-y-6">
+                <div class="flex gap-4">
+                    <span class="text-orange-600 font-black">01</span>
+                    <p class="text-zinc-300 text-sm">Tap **Install Now** and download the file.</p>
+                </div>
+                <div class="flex gap-4">
+                    <span class="text-orange-600 font-black">02</span>
+                    <p class="text-zinc-300 text-sm">Open your **Downloads** folder and click on the FirePro file.</p>
+                </div>
+                <div class="flex gap-4">
+                    <span class="text-orange-600 font-black">03</span>
+                    <p class="text-zinc-300 text-sm">Click **Install**. If asked, allow your browser to install apps from "Unknown Sources".</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <footer class="mt-10 text-zinc-600 text-[10px] uppercase tracking-widest pb-10">
-        &copy; 2026 FirePro Network
-    </footer>
+        <div class="text-center mt-12">
+            <p class="text-zinc-600 text-[10px] tracking-widest uppercase">&copy; 2026 FirePro Network</p>
+        </div>
+
+    </div>
 
 </body>
 </html>

@@ -34,9 +34,6 @@
     </div>
 
     <script>
-        // THE DIRECT LINK THAT WORKS FOR DOWNLOADER AND PHONES
-        const DIRECT_APK_URL = "https://dl.dropboxusercontent.com/scl/fi/nywwy46mbev7mlpqv8ni6/FirePro.apk?rlkey=64sncdn4d1n58bk0aqrthc0va";
-
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json').then(res => res.json()).then(data => {
@@ -46,13 +43,18 @@
                     const container = document.getElementById('flex-container');
                     
                     data[input].forEach(app => {
+                        // FIX: Convert the URL from your JSON into a direct download link
+                        // This replaces 'www.dropbox.com' with 'dl.dropboxusercontent.com'
+                        let directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+                        
                         const card = document.createElement('div');
                         card.className = "bg-zinc-900 p-8 rounded-[2.5rem] flex flex-col items-center w-72";
-                        // BACK TO BASICS: No target="_blank", no intents.
+                        
+                        // THE FIX: Each button now uses its own 'directUrl' from the JSON data
                         card.innerHTML = `
                             <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl">
                             <h3 class="font-bold uppercase text-xl mb-6">${app.name}</h3>
-                            <a href="${DIRECT_APK_URL}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase">Install Now</a>
+                            <a href="${directUrl}" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase">Install Now</a>
                         `;
                         container.appendChild(card);
                     });

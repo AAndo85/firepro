@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>FirePro</title>
+    <style>
+        body { background-color: #000000; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="text-white flex flex-col items-center p-6 min-h-screen">
+    
+    <div id="login-box" class="text-center w-full max-w-md mt-20">
+        <h1 class="text-5xl font-black text-orange-600 mb-2">FIREPRO</h1>
+        <p class="text-zinc-500 mb-10 tracking-widest uppercase">Media Library</p>
+        <input type="text" id="code" placeholder="ENTER ACCESS CODE" class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-xl mb-4 text-center tracking-widest focus:outline-none focus:border-orange-600 transition-all">
+        <button onclick="checkCode()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl transition-all uppercase tracking-widest">Access Library</button>
+    </div>
+
+    <div id="library" class="hidden w-full max-w-6xl">
+        <div class="flex justify-between items-end mb-8">
+            <h2 class="text-3xl font-bold text-orange-600">LIBRARY</h2>
+            <button onclick="location.reload()" class="text-zinc-500 hover:text-white text-sm">EXIT</button>
+        </div>
+        <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <script>
+        function checkCode() {
+            // .value is required to get the text from the input box
+            const inputCode = document.getElementById('code').value.trim();
+            const grid = document.getElementById('grid');
+            const loginBox = document.getElementById('login-box');
+            const library = document.getElementById('library');
+
+            fetch('firepro.json')
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(data => {
+                    // Check if the entered code exists as a key in your JSON
+                    if (data[inputCode]) {
+                        loginBox.classList.add('hidden');
+                        library.classList.remove('hidden');
+                        grid.innerHTML = '';
+
+                        data[inputCode].forEach(app => {
+                            grid.innerHTML += `
+                                <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl hover:border-orange-600 transition-all group">
+                                    <img src="${app.icon}" class="w-16 h-16 rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform" onerror="this.src='https://via.placeholder.com/64?text=App'">
+                                    <h3 class="text-xl font-bold mb-1">${app.name}</h3>
+                                    <p class="text-zinc-500 text-sm mb-6">${app.desc}</p>
+                                    <a href="${app.url}" target="_blank" class="inline-block bg-zinc-800 hover:bg-orange-600 text-white text-xs font-bold py-3 px-6 rounded-lg transition-all tracking-widest">DOWNLOAD</a>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        alert('Invalid Access Code. Please try again.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error: Make sure your firepro.json file is valid and live.');
+                });
+        }
+    </script>
+</body>
+</html>

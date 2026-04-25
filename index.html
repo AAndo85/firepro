@@ -8,16 +8,22 @@
     <style>
         body { background-color: #000; color: white; font-family: sans-serif; }
         .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
-        .app-card:hover { border-color: #ea580c; transform: scale(1.02); }
-        .code-box { background: #1a1a1a; border: 1px dashed #333; }
+        
+        /* THIS FIXES THE TV REMOTE ISSUE */
+        button:focus { 
+            background-color: #ea580c !important; 
+            outline: 4px solid white; 
+            transform: scale(1.05);
+        }
+        .app-card:focus-within { border-color: #ea580c; }
     </style>
 </head>
 <body class="p-6">
 
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-6xl font-black text-orange-600 italic mb-10 text-center">FIREPRO</h1>
+        <h1 class="text-6xl font-black text-orange-600 italic mb-10">FIREPRO</h1>
         <input type="text" id="code" placeholder="ENTER ACCESS CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-80 outline-none focus:border-orange-600 mb-4 font-bold text-xl uppercase text-white">
-        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black hover:bg-orange-500 transition shadow-lg">ACCESS LIBRARY</button>
+        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black hover:bg-orange-500 shadow-lg">ACCESS LIBRARY</button>
     </div>
 
     <div id="library" class="hidden">
@@ -44,21 +50,13 @@
                         const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
                         
                         sortedApps.forEach(app => {
-                            // Extract a shortened version of the URL for the user to type
-                            const shortUrl = app.url.split('?')[0]; 
-
                             container.innerHTML += `
                                 <div class="app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl">
                                     <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 shadow-xl object-cover border-2 border-zinc-800">
                                     <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
-                                    <p class="text-xs text-zinc-500 mb-4 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
+                                    <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
                                     
-                                    <div class="code-box w-full p-3 rounded-xl mb-6">
-                                        <p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Downloader Link:</p>
-                                        <p class="text-orange-500 font-mono text-xs break-all selection:bg-orange-600">${shortUrl}</p>
-                                    </div>
-
-                                    <button onclick="window.location.href='${app.url}'" class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-500 transition shadow-lg active:scale-95">
+                                    <button onclick="window.location.href='${app.url}'" class="w-full bg-zinc-800 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition shadow-lg">
                                         Install Now
                                     </button>
                                 </div>`;

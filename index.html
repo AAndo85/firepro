@@ -7,13 +7,13 @@
     <title>FirePro Library</title>
     <style>
         body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
-        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; cursor: pointer; }
+        .app-card { background: #0f0f0f; border: 2px solid #1a1a1a; width: 320px; transition: 0.3s; }
         
-        /* High-visibility focus for Firestick Remotes */
+        /* Forces the TV Remote to highlight the button in bright white */
         button:focus, a:focus { 
             background-color: #ffffff !important; 
             color: #ea580c !important;
-            outline: 6px solid #ea580c; 
+            outline: 8px solid #ea580c; 
             transform: scale(1.05);
         }
         .app-card:focus-within { border-color: #ea580c; }
@@ -24,30 +24,21 @@
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
         <h1 class="text-6xl font-black text-orange-600 italic mb-10">FIREPRO</h1>
         <input type="text" id="code" placeholder="ENTER ACCESS CODE" class="bg-zinc-900 border-2 border-zinc-800 p-4 rounded-2xl text-center w-80 outline-none focus:border-orange-600 mb-4 font-bold text-xl uppercase text-white">
-        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black hover:bg-orange-500 shadow-lg">ACCESS LIBRARY</button>
+        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 rounded-2xl font-black shadow-lg">ACCESS LIBRARY</button>
     </div>
 
     <div id="library" class="hidden">
         <div class="flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
             <h1 class="text-4xl font-black italic text-orange-600 uppercase">Firepro <span class="text-white not-italic text-xl ml-2 opacity-50">Library</span></h1>
             <div class="flex gap-4">
-                <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase hover:bg-zinc-700">Logout</button>
-                <button onclick="window.close();" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase hover:bg-red-600">Exit App</button>
+                <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl text-xs font-bold uppercase">Logout</button>
+                <button onclick="window.history.back()" class="bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase">Exit App</button>
             </div>
         </div>
         <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
     </div>
 
     <script>
-        // TV Remote Back Button Logic
-        window.addEventListener('keydown', function(event) {
-            if (event.key === 'Backspace' || event.keyCode === 8 || event.keyCode === 461) {
-                if (!document.getElementById('library').classList.contains('hidden')) {
-                    location.reload();
-                }
-            }
-        });
-
         function checkCode() {
             const input = document.getElementById('code').value;
             fetch('./firepro.json')
@@ -63,24 +54,22 @@
                         const sortedApps = data[input].sort((a, b) => a.name.localeCompare(b.name));
                         
                         sortedApps.forEach(app => {
-                            container.innerHTML += `
-                                <div class="app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl">
-                                    <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 shadow-xl object-cover border-2 border-zinc-800">
-                                    <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
-                                    <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
-                                    
-                                    <button onclick="window.location.assign('${app.url}')" 
-                                       class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition shadow-lg text-center block">
-                                       Install Now
-                                    </button>
-                                </div>`;
+                            // This specific structure is required for Firestick 'Downloader' app compatibility
+                            const card = document.createElement('div');
+                            card.className = "app-card p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl";
+                            card.innerHTML = `
+                                <img src="${app.icon}" class="w-28 h-28 rounded-3xl mb-6 shadow-xl object-cover border-2 border-zinc-800">
+                                <h3 class="font-black text-2xl mb-1 uppercase tracking-tighter">${app.name}</h3>
+                                <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest font-bold opacity-60">${app.desc}</p>
+                                <a href="${app.url}" download class="w-full bg-orange-600 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center block">
+                                   Install Now
+                                </a>
+                            `;
+                            container.appendChild(card);
                         });
                     } else { 
                         alert("Access Code Invalid"); 
                     }
-                })
-                .catch(err => {
-                    alert("Error loading library. Check your firepro.json formatting.");
                 });
         }
     </script>

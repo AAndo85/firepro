@@ -3,51 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirePro Library</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #000; color: white; font-family: sans-serif; margin: 0; padding: 0; }
+        /* Base TV Styles */
+        body { 
+            background-color: #000; 
+            color: white; 
+            font-family: sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; /* Prevent scrollbar flickering on TV */
+        }
+
+        /* Remote Focus Effect: The "Orange Glow" for D-Pad navigation */
         .selectable:focus { 
             background-color: white !important; 
             color: #ea580c !important; 
-            outline: 10px solid #ea580c;
-            transform: scale(1.05);
+            outline: 8px solid #ea580c;
+            transform: scale(1.08);
             z-index: 50;
+            transition: all 0.2s ease-in-out;
         }
+
+        /* State: Item is installed/finished */
         .installed {
             background-color: #27272a !important; 
             color: #71717a !important; 
             pointer-events: none;
+            opacity: 0.6;
         }
-        /* New style for the intermediate downloading state */
-        .downloading {
-            background-color: #444 !important;
-            color: #bbb !important;
+
+        /* State: Download is active */
+        .downloading { 
+            background-color: #444 !important; 
+            color: #bbb !important; 
+            pointer-events: none;
         }
+
+        /* Standard Hide Scrollbar */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-6">
+<body class="p-8">
 
     <div id="login-box" class="flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-6xl font-black text-orange-600 mb-10 italic uppercase">FirePro</h1>
-        <input type="text" id="code" class="bg-zinc-900 p-4 rounded-2xl w-80 text-white selectable text-center uppercase outline-none" placeholder="ENTER ACCESS CODE">
-        <button onclick="checkCode()" class="bg-orange-600 w-80 py-4 mt-4 rounded-2xl font-black selectable uppercase">Access Library</button>
+        <h1 class="text-7xl font-black text-orange-600 mb-12 italic uppercase tracking-tighter">FirePro</h1>
+        <div class="bg-zinc-900 p-1 rounded-3xl shadow-2xl">
+            <input type="text" id="code" 
+                   class="bg-transparent p-5 rounded-2xl w-96 text-white selectable text-center uppercase font-bold text-2xl outline-none" 
+                   placeholder="ENTER ACCESS CODE">
+        </div>
+        <button onclick="checkCode()" 
+                class="bg-orange-600 w-96 py-5 mt-6 rounded-2xl font-black selectable uppercase text-white text-xl shadow-lg">
+            Access Library
+        </button>
     </div>
 
     <div id="library" class="hidden">
-        <div class="flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
-            <h1 class="text-3xl font-black text-orange-600 italic uppercase">FirePro</h1>
-            <div class="flex gap-4">
-                <button onclick="location.reload()" class="bg-zinc-800 px-6 py-2 rounded-xl selectable font-bold uppercase text-sm">Logout</button>
-                <button onclick="location.reload()" class="bg-red-700 px-6 py-2 rounded-xl selectable font-bold uppercase text-sm">Exit</button>
+        <div class="flex justify-between items-center mb-12 border-b border-zinc-800 pb-8">
+            <h1 class="text-4xl font-black text-orange-600 italic uppercase">FirePro <span class="text-zinc-700 font-light">Portal</span></h1>
+            <div class="flex gap-6">
+                <button onclick="location.reload()" 
+                        class="bg-zinc-800 px-8 py-3 rounded-xl selectable font-bold uppercase text-white">
+                    Logout
+                </button>
             </div>
         </div>
-        <div id="flex-container" class="flex flex-wrap justify-center gap-8 pb-20"></div>
+
+        <div id="flex-container" class="flex flex-wrap justify-center gap-10 pb-24">
+            </div>
     </div>
 
     <script>
         let lastBtnClicked = null;
 
-        // THIS IS CALLED BY THE ANDROID APP ONCE DOWNLOAD REACHES 100%
+        /**
+         * ANDROID HANDSHAKE
+         * This function is triggered by your Kotlin code:
+         * myWebView.evaluateJavascript("onDownloadFinished();", null)
+         */
         function onDownloadFinished() {
             if (lastBtnClicked) {
                 lastBtnClicked.innerText = "INSTALLED";
@@ -57,61 +92,99 @@
             }
         }
 
+        /**
+         * UI TRIGGER
+         * Updates button state when user starts a download
+         */
         function handleDownload(btn) {
             lastBtnClicked = btn;
             btn.innerText = "DOWNLOADING...";
             btn.classList.add('downloading');
-            // The Android app's DownloadListener triggers the rest.
+            // The Android DownloadListener automatically catches the <a> click
         }
 
+        /**
+         * DATA FETCH & RENDER
+         */
         function checkCode() {
-            const input = document.getElementById('code').value;
-            fetch('./firepro.json?v=' + Date.now()).then(res => res.json()).then(data => {
-                if (data[input]) {
-                    document.getElementById('login-box').style.display = 'none';
-                    document.getElementById('library').classList.remove('hidden');
-                    const container = document.getElementById('flex-container');
-                    container.innerHTML = ''; 
-                    
-                    let sortedApps = [...data[input]].sort((a, b) => a.name.localeCompare(b.name));
-                    
-                    sortedApps.forEach(app => {
-                        const directUrl = app.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'dl=1');
-                        const card = document.createElement('div');
-                        card.className = "bg-zinc-900 p-8 rounded-[2.5rem] flex flex-col items-center w-72 shadow-2xl border border-zinc-800";
+            const input = document.getElementById('code').value.trim();
+            if (!input) return;
+
+            // Fetch firepro.json from your GitHub root
+            fetch('./firepro.json?nocache=' + new Date().getTime())
+                .then(res => {
+                    if (!res.ok) throw new Error("Check JSON path");
+                    return res.json();
+                })
+                .then(data => {
+                    if (data[input]) {
+                        // Switch screens
+                        document.getElementById('login-box').classList.add('hidden');
+                        document.getElementById('library').classList.remove('hidden');
                         
-                        card.innerHTML = `
-                            <img src="${app.icon}" class="w-24 h-24 mb-4 rounded-2xl object-cover">
-                            <h3 class="font-bold uppercase text-xl mb-1">${app.name}</h3>
-                            <p class="text-[10px] text-zinc-500 mb-6 uppercase tracking-widest text-center">${app.desc || ''}</p>
-                            <a href="${directUrl}" 
-                               onclick="handleDownload(this)"
-                               class="w-full bg-orange-600 py-4 rounded-2xl font-black text-center no-underline selectable text-white uppercase block">
-                               Download
-                            </a>
-                        `;
-                        container.appendChild(card);
-                    });
-                    
-                    setTimeout(() => {
-                        const first = document.querySelector('.selectable');
-                        if (first) first.focus();
-                    }, 500);
-                } else {
-                    alert("Invalid Code");
-                }
-            });
+                        const container = document.getElementById('flex-container');
+                        container.innerHTML = ''; 
+                        
+                        // Sort apps alphabetically
+                        let sortedApps = [...data[input]].sort((a, b) => a.name.localeCompare(b.name));
+                        
+                        sortedApps.forEach(app => {
+                            // Format Dropbox URL for direct download
+                            const directUrl = app.url
+                                .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+                                .replace('dl=0', 'dl=1');
+                            
+                            const card = document.createElement('div');
+                            card.className = "bg-zinc-900 p-8 rounded-[3rem] flex flex-col items-center w-80 border-2 border-zinc-800 shadow-2xl transition-all";
+                            
+                            card.innerHTML = `
+                                <img src="${app.icon}" class="w-28 h-28 mb-6 rounded-3xl object-cover border-4 border-zinc-800 shadow-xl">
+                                <h3 class="font-bold uppercase text-2xl mb-2 text-center text-orange-500">${app.name}</h3>
+                                <p class="text-xs text-zinc-500 mb-8 uppercase tracking-widest text-center px-4 h-10 overflow-hidden leading-tight">
+                                    ${app.desc || 'No description provided'}
+                                </p>
+                                <a href="${directUrl}" 
+                                   onclick="handleDownload(this)" 
+                                   class="w-full bg-orange-600 py-5 rounded-2xl font-black text-center no-underline selectable text-white uppercase text-lg block">
+                                   Download
+                                </a>
+                            `;
+                            container.appendChild(card);
+                        });
+                        
+                        // Set focus to first download button for D-Pad
+                        setTimeout(() => {
+                            const firstElement = document.querySelector('#library .selectable');
+                            if (firstElement) firstElement.focus();
+                        }, 300);
+
+                    } else {
+                        alert("ERROR: Access Denied. Check your code.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error reaching database. Check JSON file.");
+                });
         }
 
+        /**
+         * TV REMOTE LISTENER
+         * Maps Firestick Remote buttons to web actions
+         */
         document.addEventListener('keydown', function(e) {
+            // Enter Key (DPAD Center)
             if (e.keyCode === 13) { 
                 if (document.activeElement) document.activeElement.click();
             }
+            
+            // Back Button (Firestick Return)
             if (e.keyCode === 8 || e.keyCode === 461) { 
-                if (!document.getElementById('library').classList.contains('hidden')) {
-                    location.reload();
+                const libraryVisible = !document.getElementById('library').classList.contains('hidden');
+                if (libraryVisible) {
+                    location.reload(); // Quick way to return to login
+                    e.preventDefault();
                 }
-                e.preventDefault();
             }
         });
     </script>

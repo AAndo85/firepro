@@ -13,7 +13,11 @@
             font-family: sans-serif; 
             margin: 0; 
             padding: 0; 
-            overflow: hidden; /* Prevent scrollbar flickering on TV */
+            /* FIXED: Changed from hidden to auto and added hide-scrollbar rules */
+            overflow-y: auto;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* Remote Focus Effect: The "Orange Glow" for D-Pad navigation */

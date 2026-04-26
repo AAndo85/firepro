@@ -6,21 +6,20 @@
     <title>FirePro Library</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Base TV Styles */
+        /* Base TV Styles - RESTORED */
         body { 
             background-color: #000; 
             color: white; 
             font-family: sans-serif; 
             margin: 0; 
             padding: 0; 
-            /* FIXED: Changed from hidden to auto and added hide-scrollbar rules */
             overflow-y: auto;
             overflow-x: hidden;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* Remote Focus Effect: The "Orange Glow" for D-Pad navigation */
+        /* Remote Focus Effect: The "Orange Glow" - RESTORED */
         .selectable:focus { 
             background-color: white !important; 
             color: #ea580c !important; 
@@ -30,7 +29,7 @@
             transition: all 0.2s ease-in-out;
         }
 
-        /* State: Item is installed/finished */
+        /* State: Item is installed/finished - RESTORED */
         .installed {
             background-color: #27272a !important; 
             color: #71717a !important; 
@@ -38,14 +37,21 @@
             opacity: 0.6;
         }
 
-        /* State: Download is active */
+        /* Green Checkmark State for Android Bridge - ADDED */
+        .installed-status {
+            background-color: #166534 !important; 
+            color: white !important;
+            opacity: 1 !important;
+        }
+
+        /* State: Download is active - RESTORED */
         .downloading { 
             background-color: #444 !important; 
             color: #bbb !important; 
             pointer-events: none;
         }
 
-        /* Standard Hide Scrollbar */
+        /* Standard Hide Scrollbar - RESTORED */
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -75,46 +81,44 @@
             </div>
         </div>
 
-        <div id="flex-container" class="flex flex-wrap justify-center gap-10 pb-24">
-            </div>
+        <div id="flex-container" class="flex flex-wrap justify-center gap-10 pb-24"></div>
     </div>
 
     <script>
         let lastBtnClicked = null;
 
-        /**
-         * ANDROID HANDSHAKE
-         * This function is triggered by your Kotlin code:
-         * myWebView.evaluateJavascript("onDownloadFinished();", null)
-         */
+        // 1. BRIDGE: Checks Android system for the package
+        function checkInstalledApps() {
+            const apkLinks = document.querySelectorAll('.apk-link');
+            apkLinks.forEach(link => {
+                const pkg = link.getAttribute('data-package');
+                if (pkg && typeof Android !== "undefined" && Android.isAppInstalled(pkg)) {
+                    link.innerText = "✅ INSTALLED";
+                    link.classList.add('installed-status');
+                }
+            });
+        }
+
+        // Triggered by Kotlin evaluateJavascript
         function onDownloadFinished() {
             if (lastBtnClicked) {
-                lastBtnClicked.innerText = "INSTALLED";
+                lastBtnClicked.innerText = "✅ INSTALLED";
                 lastBtnClicked.classList.remove('downloading');
-                lastBtnClicked.classList.add('installed');
+                lastBtnClicked.classList.add('installed-status');
                 lastBtnClicked = null;
             }
         }
 
-        /**
-         * UI TRIGGER
-         * Updates button state when user starts a download
-         */
         function handleDownload(btn) {
             lastBtnClicked = btn;
             btn.innerText = "DOWNLOADING...";
             btn.classList.add('downloading');
-            // The Android DownloadListener automatically catches the <a> click
         }
 
-        /**
-         * DATA FETCH & RENDER
-         */
         function checkCode() {
             const input = document.getElementById('code').value.trim();
             if (!input) return;
 
-            // Fetch firepro.json from your GitHub root
             fetch('./firepro.json?nocache=' + new Date().getTime())
                 .then(res => {
                     if (!res.ok) throw new Error("Check JSON path");
@@ -122,18 +126,15 @@
                 })
                 .then(data => {
                     if (data[input]) {
-                        // Switch screens
                         document.getElementById('login-box').classList.add('hidden');
                         document.getElementById('library').classList.remove('hidden');
                         
                         const container = document.getElementById('flex-container');
                         container.innerHTML = ''; 
                         
-                        // Sort apps alphabetically
                         let sortedApps = [...data[input]].sort((a, b) => a.name.localeCompare(b.name));
                         
                         sortedApps.forEach(app => {
-                            // Format Dropbox URL for direct download
                             const directUrl = app.url
                                 .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
                                 .replace('dl=0', 'dl=1');
@@ -149,15 +150,17 @@
                                 </p>
                                 <a href="${directUrl}" 
                                    onclick="handleDownload(this)" 
-                                   class="w-full bg-orange-600 py-5 rounded-2xl font-black text-center no-underline selectable text-white uppercase text-lg block">
+                                   class="w-full bg-orange-600 py-5 rounded-2xl font-black text-center no-underline selectable text-white uppercase text-lg block apk-link"
+                                   data-package="${app.package || ''}">
                                    Download
                                 </a>
                             `;
                             container.appendChild(card);
                         });
-                        
-                        // Set focus to first download button for D-Pad
+
+                        // Run installed check and focus first element
                         setTimeout(() => {
+                            checkInstalledApps();
                             const firstElement = document.querySelector('#library .selectable');
                             if (firstElement) firstElement.focus();
                         }, 300);
@@ -172,21 +175,18 @@
                 });
         }
 
-        /**
-         * TV REMOTE LISTENER
-         * Maps Firestick Remote buttons to web actions
-         */
+        // TV REMOTE LISTENER - RESTORED
         document.addEventListener('keydown', function(e) {
-            // Enter Key (DPAD Center)
+            // Enter Key
             if (e.keyCode === 13) { 
                 if (document.activeElement) document.activeElement.click();
             }
             
-            // Back Button (Firestick Return)
+            // Back Button
             if (e.keyCode === 8 || e.keyCode === 461) { 
                 const libraryVisible = !document.getElementById('library').classList.contains('hidden');
                 if (libraryVisible) {
-                    location.reload(); // Quick way to return to login
+                    location.reload(); 
                     e.preventDefault();
                 }
             }

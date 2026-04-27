@@ -6,7 +6,7 @@
 
     {"name": "Adguard for Android", "package": "com.adguard.android.content_blocker", "url": "https://dl.dropboxusercontent.com/scl/fi/v8pdw1m86hjd7uaigk6so/AdGuard_4.10.9_10267190_armeabi-v7a_mod_apkdone.apk?rlkey=byzdnziegfm4jrk5vtdk61awl", "icon": "https://dl.dropboxusercontent.com/scl/fi/rimay7dagva91xumyxxl8/Old-Adguard.png?rlkey=3hlvs1rx6qjhx6cyqespadw1l", "desc": "Full mobile protection"},
 
-    {"name": "Anilab", "package": "com.anilab.android", "url": "https://dl.dropboxusercontent.com/scl/fi/wdurqsfzoe7aac45bgfg2/anilab-android-tv-1.apk?rlkey=1as5s0otdi0ioazf5fvpy89xq", "icon": "https://dl.dropboxusercontent.com/scl/fi/gpn7u5n5nf3923vare494/Anilab.jpg?rlkey=7fxhz9ojmln8xbhj5448i09jq", "desc": "Anime streaming"},
+    {"name": "Anilab", "package": "com.anilab.android", "url": "http://dl.dropboxusercontent.com/scl/fi/wdurqsfzoe7aac45bgfg2/anilab-android-tv-1.apk?rlkey=1as5s0otdi0ioazf5fvpy89xq", "icon": "https://dl.dropboxusercontent.com/scl/fi/gpn7u5n5nf3923vare494/Anilab.jpg?rlkey=7fxhz9ojmln8xbhj5448i09jq", "desc": "Anime streaming"},
 
     {"name": "Drama Player", "package": "com.dramaplayer.tv", "url": "https://dl.dropboxusercontent.com/scl/fi/7t3gmkdf0s7ilb1ot6fza/Drama_Player_v1.0.10_Android_TV.apk?rlkey=lx1l4m9wok838b3rl90758fsd", "icon": "https://dl.dropboxusercontent.com/scl/fi/4kt4cvbm5xb4g3lf3xxnj/Drama-Player.jpeg?rlkey=dvikqmn4pf31q2j2buwhlwr96", "desc": "Asian dramas"},
 

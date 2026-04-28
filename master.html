@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirePro | Master Vault</title>
+    <style>
+        body {
+            background-color: #0d001a; /* Dark Purple tint */
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #9c27b0;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #e1bee7;
+            margin: 0;
+        }
+
+        .badge {
+            background: #9c27b0;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: #1a0033;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            border: 2px solid #3c0066;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card h2 { color: #f3e5f5; margin-bottom: 5px; }
+        
+        .btn {
+            background-color: #9c27b0;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .admin-note {
+            color: #6a1b9a;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MASTER VAULT</h1>
+        <div class="badge">ADMIN ACCESS GRANTED</div>
+    </header>
+
+    <div class="grid">
+        <!-- PRIVATE TOOL 1 -->
+        <a href="https://example.com/admin_tool.apk" class="card">
+            <h2>Admin Tool</h2>
+            <p>Private build for master account</p>
+            <div class="btn">INSTALL TOOL</div>
+            <div class="admin-note">INTERNAL USE ONLY</div>
+        </a>
+
+        <!-- PRIVATE TOOL 2 -->
+        <a href="https://example.com/hidden_app.apk" class="card">
+            <h2>Hidden App</h2>
+            <p>Premium unlocked version</p>
+            <div class="btn">INSTALL APP</div>
+            <div class="admin-note">INTERNAL USE ONLY</div>
+        </a>
+    </div>
+
+</body>
+</html>

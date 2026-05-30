@@ -21,5 +21,5 @@
     {"name": "XXX Milevids", "package": "com.xxx.milevids.app", "url": "https://dl.dropboxusercontent.com/scl/fi/qpfgekeuup6z8gw6xuily/MileVids-2023.02.apk?rlkey=afdbi9iroebvxzb9ohvx8nm8r", "icon": "https://dl.dropboxusercontent.com/scl/fi/2qxqjq3wg6l9wgc0jsp0w/MileVids.jpeg?rlkey=alysdd5s59a0aayfbdy9l13iq", "desc": "Video library"},
     {"name": "UnLinked", "package": "com.unlinked.app", "url": "https://dl.dropbox.com/scl/fi/ngs0dq4pqt66zls3gnikk/UnLinked.apk?rlkey=98tl8ds3eh02tui3mpn7klqh3&st=gbx56r2n&raw=1", "icon": "https://dl.dropboxusercontent.com/scl/fi/k7n0pryb3m7mxsns45y6o/unlinked.jpeg?rlkey=ijywqddanfq7aaolgr7k4upzl&st=s0qixfiv&raw=1", "desc": "App Store alternative"},
     {"name": "Downloader", "package": "com.esaba.downloader", "url": "https://dl.dropboxusercontent.com/scl/fi/phv8l7d4wy7v8xd78uswi/downloader.apk?rlkey=jx04j5g3wlw8q9zpyxos1mvre&st=0bwhcbbq&raw=1", "icon": "https://dl.dropboxusercontent.com/scl/fi/fdhtzydb6hkw09qbohrrd/downloader.png?rlkey=ka9kedu04ea559v437dz2gu64&st=j8syytdv&raw=1", "desc": "Browser and download manager"}
-    
+  ]
     }

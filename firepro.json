@@ -21,8 +21,5 @@
     {"name": "UnLinked", "package": "com.unlinked.app", "url": "https://dl.dropbox.com/scl/fi/ngs0dq4pqt66zls3gnikk/UnLinked.apk?rlkey=98tl8ds3eh02tui3mpn7klqh3&st=gbx56r2n&raw=1", "icon": "https:[...]
     {"name": "Downloader", "package": "com.esaba.downloader", "url": "https://dl.dropboxusercontent.com/scl/fi/phv8l7d4wy7v8xd78uswi/downloader.apk?rlkey=jx04j5g3wlw8q9zpyxos1mvre&st=0bwhcbbq&raw=[...]
     {"name": "Planet VPN", "package": "com.planetvpn.tv", "url": "https://dl.dropbox.com/scl/fi/p146u2i9i7g6k4dhdw9qp/planetvpn-tv.apk?rlkey=778ud0azrddjugxo4r7l4d1vo&st=bx3kzzjz&raw=1", "icon": "[...]
-    {"name": "BeeTv", "package": "com.beetv.app", "url": "https://dl.dropbox.com/scl/fi/dzmi45avarqg6t1fkrvr8/BeeTv.apk?rlkey=b87sxkjnobu1xhxj2kcxo0z4u&st=6fp95dda&dl=1", "icon": "https://www.dropbox.com/scl/fi/bmwbid0u9atm3dvkm5iyb/BeeTv.jpeg?rlkey=dcmsh865lmqwpz96kgs6zrc0s&st=ili9ofww&dl=1"},
-    {"name": "Bear Player", "package": "com.bearplayer.app", "url": "https://dl.dropbox.com/scl/fi/svphyx1bjzujt9ucd1cp3/bear2.20.28-2-1.apk?rlkey=z7rev2v6kk049zvswdk446a1m&st=xxplwo62&dl=1", "icon": "https://www.dropbox.com/scl/fi/r7r30d6wesv1dq9iwcbv6/bear-player.jpeg?rlkey=zo2vh6wszzztummu3fgs8urb6&st=jn3e0n1e&dl=1"},
-    {"name": "Reezn", "package": "com.reezn.app", "url": "https://dl.dropbox.com/scl/fi/vfjjp38ll76ucyforwt8c/Reezn.apk?rlkey=6gicxtl7k65bv4an6kwm9q5c4&st=cn1mulpq&dl=1"}
   ]
 }

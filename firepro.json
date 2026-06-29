@@ -1,4 +1,3 @@
-```
 {
   "2636": [
     {"name": "Adguard", "package": "com.adguard.android", "url": "https://dl.dropboxusercontent.com/scl/fi/3udgh95q8x9d0i9wkln1i/Adguard_4.14.33_1766846050_latestmodapks.com.apk?rlkey=6zhjan1nof1429wstzmj3kcfm", "icon": "https://dl.dropboxusercontent.com/scl/fi/37apupfakwmqafz9boba2/Adguard.png?rlkey=8pyc0wdghjnj4ulz5x2nuam5o", "desc": "Ad blocker"},
@@ -23,6 +22,5 @@
     {"name": "Downloader", "package": "com.esaba.downloader", "url": "https://dl.dropboxusercontent.com/scl/fi/phv8l7d4wy7v8xd78uswi/downloader.apk?rlkey=jx04j5g3wlw8q9zpyxos1mvre&st=0bwhcbbq&raw=1", "icon": "https://dl.dropboxusercontent.com/scl/fi/fdhtzydb6hkw09qbohrrd/downloader.png?rlkey=ka9kedu04ea559v437dz2gu64&st=j8syytdv&raw=1", "desc": "Browser and download manager"},
     {"name": "Planet VPN", "package": "com.planetvpn.tv", "url": "https://dl.dropbox.com/scl/fi/p146u2i9i7g6k4dhdw9qp/planetvpn-tv.apk?rlkey=778ud0azrddjugxo4r7l4d1vo&st=bx3kzzjz&raw=1", "icon": "https://dl.dropbox.com/scl/fi/1lnjv2l1mnhnhy2c41xjz/planet-vpn.jpeg?rlkey=ltxnc8jfoe09b6ybzgs4211he&st=1k0zv03d&raw=1"},{"name": "BeeTv", "package": "com.beetv.app", "url": "https://dl.dropbox.com/scl/fi/dzmi45avarqg6t1fkrvr8/BeeTv.apk?rlkey=b87sxkjnobu1xhxj2kcxo0z4u&st=6fp95dda&dl=1", "icon": "https://dl.dropbox.com/scl/fi/bmwbid0u9atm3dvkm5iyb/BeeTv.jpeg?rlkey=dcmsh865lmqwpz96kgs6zrc0s&st=ili9ofww&dl=1", "desc": "TV streaming"},
 {"name": "Bear Player", "package": "com.bearplayer.app", "url": "https://dl.dropbox.com/scl/fi/svphyx1bjzujt9ucd1cp3/bear2.20.28-2-1.apk?rlkey=z7rev2v6kk049zvswdk446a1m&st=xxplwo62&dl=1", "icon": "https://dl.dropbox.com/scl/fi/r7r30d6wesv1dq9iwcbv6/bear-player.jpeg?rlkey=zo2vh6wszzztummu3fgs8urb6&st=jn3e0n1e&dl=1", "desc": "Media player"},
-{"name": "Reezn", "package": "com.reezn.app", "url": "https://dl.dropbox.com/scl/fi/vfjjp38ll76ucyforwt8c/Reezn.apk?rlkey=6gicxtl7k65bv4an6kwm9q5c4&st=cn1mulpq&dl=1", "icon": "https://dl.dropbox.com/scl/fi/2xeuntbhgkj3lopi1f7x9/Reezn.jpeg?rlkey=biyjxtazk9wrfc00p2xvdc504&st=ort5v6ff&dl=1", "desc": "Streaming app"} 
-  ]
+{"name": "Reezn", "package": "com.reezn.app", "url": "https://dl.dropbox.com/scl/fi/vfjjp38ll76ucyforwt8c/Reezn.apk?rlkey=6gicxtl7k65bv4an6kwm9q5c4&st=cn1mulpq&dl=1", "icon": "https://dl.dropbox.com/scl/fi/2xeuntbhgkj3lopi1f7x9/Reezn.jpeg?rlkey=biyjxtazk9wrfc00p2xvdc504&st=ort5v6ff&dl=1", "desc": "Streaming app"}  ]
 }
